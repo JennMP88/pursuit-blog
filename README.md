@@ -1,91 +1,47 @@
-# Blog API
+# Pursuit Reddit
 
-You are to build a simple, authentication enabled Blog API. This API will contain the following high level functionalities:
+Let's reimplement Reddit API with express.
 
-* CRUD options for a User
-* CRUD options for a Post, linked to a User
-* CRUD options for a Comment, linked to both a User (the author) and a Post (the comment container)
+## High level requirements
 
-All posts and comments should be publicly readable ONLY. Additionally, any user's details can be publicly accessed (save the email / password).
+### 1. Body Parser to handle JSON payloads in POST, PUT, DELETE requests
+### 2. Logging service that drops messages to a logfile
 
-A user can be created publicly but only an authenticated user can update her/his profile via PUT or DELETE.
-
-A post can only be created, deleted or updated by an authenticated user that is author of post.
-A comment can only be created, deleted or updated by an authenticated user that is author of comment OR the author of the post.
-
-# Routes
-
-Here are the routes that must be implemented. Remember, **PRIVATE** routes imply that ONLY authenticated user that is author of post or comment may access those routes.
-
-## KEY
-**PUBLIC**: ✅
-**PRIVATE**: ❌
-
-## USER
-
-#### ✅ POST /user 
-#### ✅ GET /user/:user_id
-#### ❌ PUT /user/:user_id
-#### ❌ DEL /user/:user_id
-#### ✅ GET /user/:user_id/posts
-#### ✅ GET /user/:user_id/posts/:post_id
-#### ✅ GET /user/:user_id/comments
-#### ✅ GET /user/:user_id/comments/:comment_id
-#### ✅ POST /user/login
-
-## POST
-#### ❌ POST /post
-#### ✅ GET /post/:post_id
-#### ❌ PUT /post/:post_id
-#### ❌ DEL /post/:post_id
-#### ✅ GET /post/:post_id/comments
-#### ✅ GET /post/:post_id/comments/:comment_id
-
-
-## COMMENT
-
-#### ❌ POST /comment
-#### ✅ GET /comment/:comment_id
-#### ❌ PUT /comment/:comment_id
-#### ❌ DEL /comment/:comment_id
-
-# Models
-
-## User
-
-```sql
-CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  username VARCHAR (100) UNIQUE NOT NULL,
-  email VARCHAR (100) UNIQUE NOT NULL,
-  password VARCHAR (250) NOT NULL,
-  token VARCHAR (16)
-);
+Should write to `logfile.txt` in the following format:
+```
+PUT - /post/:id
+{
+    "title": "test title",
+    "content": "..."
+}
+Mon Jan 14 2019 17:37:05 GMT-0500 (Eastern Standard Time)
 ```
 
-## Post
+### 3. Protected endpoints that require authentication
 
-```sql
-CREATE TABLE posts (
-  id SERIAL PRIMARY KEY,
-  author INT REFERENCES users(id) NOT NULL,
-  title VARCHAR (100) NOT NULL,
-  body TEXT NOT NULL
-);
-```
+## Endpoints
 
-## Comment
-```sql
-CREATE TABLE comment (
-  id SERIAL PRIMARY KEY,
-  author INT REFERENCES users(id) NOT NULL,
-  post_id INT REFERENCES posts(id) NOT NULL,
-  title VARCHAR (100) NOT NULL,
-  body TEXT NOT NULL
-);
-```
+**Implement this endpoint**
+
+Basically already implemented!
+
+* POST /login **PUBLIC**
 
 
-# Optionally
+**Do not actually implement these endpoints, just the routes and the authorization / middleware!**
 
-You may use [Swagger](https://www.npmjs.com/package/express-swagger-generator) to auto generate API docs.
+## users 
+
+* POST /user **PUBLIC** (basically, sign up)
+* GET /user/:id **PUBLIC**
+* PUT /user/:id **PRIVATE** (only user who is signed in can update his/her data)
+* DELETE /user/:id **PRIVATE** (only user who is signed in can delete his/her data)
+
+## posts
+
+* POST /post **PRIVATE** 
+* GET /post/:id **PUBLIC**
+* PUT /post/:id **PRIVATE** 
+* DELETE /post/:id **PRIVATE** 
+
+
